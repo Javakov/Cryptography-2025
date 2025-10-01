@@ -1,10 +1,11 @@
-package com.cryptography.main.vigenere;
+package com.cryptography.main.task1.vigenere;
 
 import com.cryptography.utils.FileUtils;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Comparator;
 
-public class VigenereKnownPlaintextScan {
+public class VigenereKnownScanTask10 {
     private static final String INPUT = "1/in/text4_vigener_c_all.txt";
     private static final String OUT = "1/out/text4_vigener_known_scan.txt";
     private static final String WORD = "housewives"; // длина 10
@@ -14,11 +15,11 @@ public class VigenereKnownPlaintextScan {
         byte[] plain = WORD.getBytes(StandardCharsets.US_ASCII);
 
         StringBuilder report = new StringBuilder();
-        report.append("Скан известного слова '"+WORD+"' ("+plain.length+")\n\n");
+        report.append("Скан известного слова '" + WORD + "' (").append(plain.length).append(")\n\n");
 
         // Накапливаем лучших кандидатов
         java.util.PriorityQueue<String[]> top = new java.util.PriorityQueue<>(
-                10, (a,b) -> Double.compare(Double.parseDouble(a[0]), Double.parseDouble(b[0])));
+                10, Comparator.comparingDouble(a -> Double.parseDouble(a[0])));
 
         int windows = Math.max(0, cipher.length - plain.length + 1);
         for (int shift = 0; shift < windows; shift++) {
@@ -47,7 +48,7 @@ public class VigenereKnownPlaintextScan {
         }
 
         // Выберем лучший и попробуем восстановить ключ по минимальному периоду
-        String[] bestRow = best.get(0);
+        String[] bestRow = best.getFirst();
         int bestShift = Integer.parseInt(bestRow[1]);
         String bestCandidate = bestRow[2];
         String period = minimalPeriod(bestCandidate);

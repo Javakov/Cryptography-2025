@@ -1,4 +1,4 @@
-package com.cryptography.main.affine;
+package com.cryptography.main.task1.affine;
 
 import com.cryptography.cipher.affine.AffineCipher;
 import com.cryptography.utils.FileUtils;
@@ -7,7 +7,7 @@ import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
 
-public class AffineText {
+public class AffineTextTask6 {
     private static final String INPUT = "1/in/text10_affine_c_all.txt";
     private static final String OUT = "1/out/text10_affine_c_all_decrypt.txt";
 

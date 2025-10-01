@@ -1,9 +1,9 @@
-package com.cryptography.main.affine;
+package com.cryptography.main.task1.affine;
 
 import com.cryptography.cipher.affine.AffineCipher;
 import com.cryptography.utils.FileUtils;
 
-public class AffineImage {
+public class AffineImageTask5 {
     private static final String INPUT = "1/in/ff2_affine_c_all.bmp";
     private static final String OUT_DECRYPT = "1/out/ff2_affine_c_all_decrypt.bmp";
     private static final String OUT_REENCRYPT = "1/out/ff2_affine_c_all_reencrypt.bmp";

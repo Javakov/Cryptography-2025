@@ -1,4 +1,4 @@
-package com.cryptography.main.caesar;
+package com.cryptography.main.task1.caesar;
 
 import com.cryptography.cipher.caesar.CaesarCipher;
 import com.cryptography.utils.FileUtils;
@@ -12,7 +12,7 @@ import java.nio.charset.StandardCharsets;
  * Брутфорс шифра Цезаря по байтам (0..255) для текстового файла.
  * Оценка качества по валидности UTF-8 и наличию кириллицы/пробелов/частых русских слов.
  */
-public class CaesarText {
+public class CaesarTextTask2 {
 
     private static final String INPUT_RESOURCE = "1/in/t3_caesar_c_all.txt";
     private static final String OUTPUT_DECRYPT_FILE = "src/main/resources/1/out/t3_caesar_c_all_decrypt.txt";

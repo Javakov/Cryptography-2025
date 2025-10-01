@@ -1,4 +1,4 @@
-package com.cryptography.main.caesar;
+package com.cryptography.main.task1.caesar;
 
 import com.cryptography.cipher.caesar.CaesarCipher;
 import com.cryptography.utils.FileUtils;
@@ -9,7 +9,7 @@ import java.util.Arrays;
 /**
  * Главный класс для шифрования изображения f2.png
  */
-public class CaesarImage {
+public class CaesarImageTask1 {
     private static final String INPUT_RESOURCE = "1/in/f2.png";
     private static final String OUTPUT_ENCRYPT_FILE = "src/main/resources/1/out/f2_encrypt.png";
     private static final String OUTPUT_DECRYPT_FILE = "src/main/resources/1/out/f2_decrypt.png";

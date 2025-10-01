@@ -1,9 +1,9 @@
-package com.cryptography.main.vigenere;
+package com.cryptography.main.task1.vigenere;
 
 import com.cryptography.cipher.vigenere.VigenereCipher;
 import com.cryptography.utils.FileUtils;
 
-public class VigenereImage {
+public class VigenereImageTask8 {
     private static final String INPUT = "1/in/im6_vigener_c_all.bmp";
     private static final String OUT_DECRYPT = "1/out/im6_vigener_c_all_decrypt.bmp";
     private static final String OUT_REENCRYPT = "1/out/im6_vigener_c_all_reencrypt.bmp";

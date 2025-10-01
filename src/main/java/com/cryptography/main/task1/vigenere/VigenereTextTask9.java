@@ -1,11 +1,11 @@
-package com.cryptography.main.vigenere;
+package com.cryptography.main.task1.vigenere;
 
 import com.cryptography.cipher.vigenere.VigenereCipher;
 import com.cryptography.utils.FileUtils;
 
 import java.nio.charset.StandardCharsets;
 
-public class VigenereText {
+public class VigenereTextTask9 {
     private static final String INPUT = "1/in/text4_vigener_c_all.txt";
     private static final String OUT = "1/out/text4_vigener_c_all_decrypt.txt";
 
@@ -25,7 +25,7 @@ public class VigenereText {
         }
 
         // Локальная донастройка ключа по метрике читаемости
-        key = refineKeyByReadability(c, key, 3);
+        key = refineKeyByReadability(c, key);
         System.out.print("Ключ (числа): ");
         for (int i = 0; i < key.length; i++) System.out.print(key[i] + (i+1<key.length?", ":"\n"));
 
@@ -62,9 +62,9 @@ public class VigenereText {
     }
 
     // Улучшение ключа: по каждому положению выбираем байт, максимизирующий читаемость текста
-    private static int[] refineKeyByReadability(byte[] cipher, int[] key, int rounds) {
+    private static int[] refineKeyByReadability(byte[] cipher, int[] key) {
         int[] k = key.clone();
-        for (int r = 0; r < rounds; r++) {
+        for (int r = 0; r < 3; r++) {
             for (int pos = 0; pos < k.length; pos++) {
                 int best = k[pos];
                 double bestScore = Double.NEGATIVE_INFINITY;

@@ -1,11 +1,12 @@
-package com.cryptography.main.vigenere;
+package com.cryptography.main.task1.vigenere;
 
 import com.cryptography.cipher.vigenere.VigenereCipher;
 import com.cryptography.utils.FileUtils;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
-public class VigenereKnownPhraseScan {
+public class VigenereKnownPhraseScanTask11 {
     private static final String INPUT = "1/in/text1_vigener_c.txt";
     private static final String OUT = "1/out/text1_vigener_c_decrypt.txt";
     private static final String PHRASE = "it therefore"; // длина 12
@@ -32,7 +33,7 @@ public class VigenereKnownPhraseScan {
 
         System.out.println("Лучший сдвиг: " + bestShift);
         System.out.print("Ключ (кусок, длина фразы) в числах: ");
-        for (int i = 0; i < bestKey.length; i++) System.out.print(bestKey[i] + (i+1<bestKey.length?", ":"\n"));
+        for (int i = 0; i < Objects.requireNonNull(bestKey).length; i++) System.out.print(bestKey[i] + (i + 1 < bestKey.length?", ":"\n"));
 
         // Попробуем укоротить ключ до минимального периода
         String candidate = new String(asChars(bestKey));
@@ -55,9 +56,7 @@ public class VigenereKnownPhraseScan {
     }
 
     private static int[] toInts(String s) {
-        int[] a = new int[s.length()];
-        for (int i = 0; i < s.length(); i++) a[i] = s.charAt(i) & 0xFF;
-        return a;
+        return VigenereCipher.fromString(s);
     }
 
     private static String minimalPeriod(String s) {

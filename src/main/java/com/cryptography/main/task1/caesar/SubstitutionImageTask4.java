@@ -1,11 +1,11 @@
-package com.cryptography.main.caesar;
+package com.cryptography.main.task1.caesar;
 
 import com.cryptography.cipher.caesar.SubstitutionCipher;
 import com.cryptography.utils.FileUtils;
 
 import java.io.IOException;
 
-public class SubstitutionImage {
+public class SubstitutionImageTask4 {
 
     private static final String INPUT_RESOURCE = "1/in/c3_subst_c_all.png";
     private static final String OUTPUT_FILE = "src/main/resources/1/out/c3_subst_c_all_decrypt.png";
