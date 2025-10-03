@@ -3,6 +3,11 @@ package com.cryptography.main.task3;
 import com.cryptography.cipher.modes.CaesarModes;
 import com.cryptography.utils.FileUtils;
 
+/**
+ * Задание 3.5: Генерация пяти изображений, зашифрованных одним и тем же ключом
+ * в разных режимах (ECB, CBC, OFB, CFB, CTR), для сравнения визуальных отличий
+ * и устойчивости к сохранению заголовка.
+ */
 public class ModesTask5 {
     // Базовое изображение возьмём из Задания 1 после дешифровки
     private static final String PLAIN = "3/out/z1_caesar_cbc_c_all_decrypt.bmp";
@@ -15,8 +20,10 @@ public class ModesTask5 {
     private static final String OUT_PREFIX = "3/out/mode5_";
 
     public static void main(String[] args) throws Exception {
+        // 1) Читаем «базовое» изображение (дешифрованный BMP из задания 3.1)
         byte[] plain = FileUtils.readResource(PLAIN);
 
+        // 2) Шифруем тело файла, сохраняя первые HEADER_KEEP байт заголовка
         // ECB
         writeEncrypted("ecb", (data,k,i)->CaesarModes.ecbEncrypt(data,k), plain);
         // CBC
@@ -35,6 +42,10 @@ public class ModesTask5 {
     @FunctionalInterface
     interface ModeEnc { byte[] apply(byte[] data, int key, int iv); }
 
+    /**
+     * Шифрует «тело» BMP, оставляя первые HEADER_KEEP байт без изменений,
+     * и записывает результат в файл в каталоге ресурсов.
+     */
     private static void writeEncrypted(String mode, ModeEnc enc, byte[] plain) throws Exception {
         byte[] out = plain.clone();
         if (out.length > HEADER_KEEP) {
@@ -49,6 +60,9 @@ public class ModesTask5 {
     }
     
     // После генерации файлов можно вызвать этот метод для сравнений
+    /**
+     * Сравнивает побайтно пары результатов режимов и печатает долю различий.
+     */
     private static void compareOutputs() throws Exception {
         byte[] ecb = FileUtils.readResource("3/out/mode5_ecb.bmp");
         byte[] cbc = FileUtils.readResource("3/out/mode5_cbc.bmp");
@@ -66,6 +80,9 @@ public class ModesTask5 {
         printDiff("CBC vs CTR", cbc, ctr);
     }
 
+    /**
+     * Печатает процент байт, отличающихся между двумя массивами.
+     */
     private static void printDiff(String title, byte[] a, byte[] b) {
         int n = Math.min(a.length, b.length);
         int diff = 0;

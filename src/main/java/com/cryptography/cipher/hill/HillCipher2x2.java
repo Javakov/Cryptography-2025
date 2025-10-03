@@ -8,6 +8,17 @@ public class HillCipher2x2 {
     private final int[][] K;      // матрица ключа 2x2
     private final int[][] Kinv;   // обратная матрица по модулю 256
 
+    /**
+     * Создаёт экземпляр шифра Хилла с ключевой матрицей 2x2.
+     *
+     * <p>
+     * Компоненты ключа приводятся к диапазону байта через {@code & 0xFF}. Проверяем обратимость:
+     * det(K) должен быть взаимно прост с 256. Обратная матрица вычисляется как adj(K) * det(K)^{-1} mod 256.
+     * </p>
+     *
+     * @param key матрица ключа 2x2
+     * @throws IllegalArgumentException если матрица не 2x2 или det не обратим по модулю 256
+     */
     public HillCipher2x2(int[][] key) {
         if (key == null || key.length != 2 || key[0].length != 2 || key[1].length != 2)
             throw new IllegalArgumentException("Ожидается матрица 2x2");
@@ -20,14 +31,24 @@ public class HillCipher2x2 {
         for (int i = 0; i < 2; i++) for (int j = 0; j < 2; j++) Kinv[i][j] = (Kinv[i][j] * detInv) & 0xFF;
     }
 
+    /**
+     * Шифрует массив байтов, применяя преобразование с матрицей K по модулю 256.
+     */
     public byte[] encrypt(byte[] data) {
         return transform(data, K);
     }
 
+    /**
+     * Расшифровывает массив байтов, применяя преобразование с матрицей K^{-1} по модулю 256.
+     */
     public byte[] decrypt(byte[] data) {
         return transform(data, Kinv);
     }
 
+    /**
+     * Выполняет блочное преобразование данных по двум байтам: y = M * x (mod 256).
+     * Нечётный последний байт (если есть) копируется без изменений.
+     */
     private static byte[] transform(byte[] data, int[][] M) {
         byte[] out = new byte[data.length];
         int n = data.length - data.length % 2; // кратно 2
@@ -43,6 +64,9 @@ public class HillCipher2x2 {
         return out;
     }
 
+    /**
+     * Возвращает присоединённую (адъюнкт) матрицу для 2x2: [[d, -b], [-c, a]] mod 256.
+     */
     private static int[][] adjoint(int[][] A) {
         int[][] adj = new int[2][2];
         adj[0][0] =  A[1][1] & 0xFF;
@@ -52,13 +76,17 @@ public class HillCipher2x2 {
         return adj;
     }
 
+    /**
+     * Мультипликативная инверсия по модулю 256 (расширенный алгоритм Евклида).
+     * Возвращает -1, если инверсии не существует.
+     */
     public static int modInverse(int a) {
         int t = 0, newT = 1;
         int r = 256, newR = a & 0xFF;
         while (newR != 0) {
             int q = r / newR;
-            int tmpT = t - q * newT; t = newT; newT = tmpT;
-            int tmpR = r - q * newR; r = newR; newR = tmpR;
+            int tmpT = t - q * newT; t = newT; newT = tmpT; // коэффициенты Безу
+            int tmpR = r - q * newR; r = newR; newR = tmpR; // шаг НОД
         }
         if (r != 1) return -1;
         if (t < 0) t += 256;

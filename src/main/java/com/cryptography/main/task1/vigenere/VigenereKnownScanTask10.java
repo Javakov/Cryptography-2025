@@ -5,6 +5,18 @@ import com.cryptography.utils.FileUtils;
 import java.nio.charset.StandardCharsets;
 import java.util.Comparator;
 
+/**
+ * Задание 1.10: Поиск по шифртексту известного слова (known-plaintext scan).
+ *
+ * <p>
+ * Для каждого возможного выравнивания слова длины L в шифртексте вычисляем «срез ключа»
+ * k[i] = c[shift+i] - p[i] (mod 256) и рассматриваем строковое представление k[i]
+ * как кандидата. Оцениваем «буквенность» кандидата (доля латинских букв) — грубая эвристика
+ * для выделения более правдоподобных ключей. Формируем ТОП-10 по этой метрике.
+ * Затем берём лучшего кандидата, находим его минимальный период и пытаемся нормализовать
+ * ключ по словарю (по циклическим сдвигам).
+ * </p>
+ */
 public class VigenereKnownScanTask10 {
     private static final String INPUT = "1/in/text4_vigener_c_all.txt";
     private static final String OUT = "1/out/text4_vigener_known_scan.txt";
@@ -24,6 +36,7 @@ public class VigenereKnownScanTask10 {
         int windows = Math.max(0, cipher.length - plain.length + 1);
         for (int shift = 0; shift < windows; shift++) {
             StringBuilder line = new StringBuilder();
+            // Если c = p + k (mod 256), то на отрезке длины слова k = c - p (mod 256)
             for (int i = 0; i < plain.length; i++) {
                 int k = ((cipher[shift + i] & 0xFF) - (plain[i] & 0xFF)) & 0xFF;
                 line.append((char) k);
@@ -51,7 +64,7 @@ public class VigenereKnownScanTask10 {
         String[] bestRow = best.getFirst();
         int bestShift = Integer.parseInt(bestRow[1]);
         String bestCandidate = bestRow[2];
-        String period = minimalPeriod(bestCandidate);
+        String period = minimalPeriod(bestCandidate); // если последовательность периодична, это оценка длины ключа
         String normalized = normalizeToDictionary(period, new String[]{"student"});
 
         String summary = "\nКлючевой вывод:\n" +
@@ -66,6 +79,9 @@ public class VigenereKnownScanTask10 {
         System.out.println("Отчёт (ТОП-10): src/main/resources/" + OUT);
     }
 
+    /**
+     * Заменяет непечатаемые символы на точки для читабельного вывода кандидатов.
+     */
     private static String sanitize(String s) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < s.length(); i++) {
@@ -75,6 +91,9 @@ public class VigenereKnownScanTask10 {
         return sb.toString();
     }
 
+    /**
+     * «Буквенность»: доля латинских букв в строке-кандидате.
+     */
     private static double alphaScore(String s) {
         int good = 0;
         for (int i = 0; i < s.length(); i++) {
@@ -84,6 +103,9 @@ public class VigenereKnownScanTask10 {
         return (double) good / Math.max(1, s.length());
     }
 
+    /**
+     * Минимальный период строки: наименьшее p, при котором s[i] == s[i%p].
+     */
     private static String minimalPeriod(String s) {
         // ищем наименьший период p, чтобы s = t^k * префикс
         for (int p = 1; p <= s.length(); p++) {
@@ -96,6 +118,10 @@ public class VigenereKnownScanTask10 {
         return s;
     }
 
+    /**
+     * Пытается сопоставить период со словарём по всем циклическим сдвигам.
+     * Возвращает найденное слово либо null.
+     */
     private static String normalizeToDictionary(String period, String[] dict) {
         // проверим циклические сдвиги периода на совпадение со словарём
         int n = period.length();

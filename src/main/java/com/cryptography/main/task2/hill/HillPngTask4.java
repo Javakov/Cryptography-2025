@@ -3,19 +3,27 @@ package com.cryptography.main.task2.hill;
 import com.cryptography.cipher.hill.HillCipher2x2;
 import com.cryptography.utils.FileUtils;
 
+/**
+ * Задание 2.4: Аналогично 2.3, восстановление ключа по PNG‑сигнатуре и дешифровка
+ * для другого входного файла. Логика восстановления и проверки совпадает.
+ */
 public class HillPngTask4 {
     private static final String INPUT = "2/in/b4_hill_c_all.png";
     private static final String OUT = "2/out/b4_hill_c_all_decrypt.png";
 
     public static void main(String[] args) throws Exception {
+        // 1) Читаем зашифрованный PNG
         byte[] enc = FileUtils.readResource(INPUT);
         int[] sig = new int[]{0x89,0x50,0x4E,0x47,0x0D,0x0A,0x1A,0x0A};
+        // 2) Восстанавливаем матрицу ключа K по первым байтам сигнатуры
         int[][] K = recoverKeyFromStart(enc, sig);
         System.out.println("Восстановленный ключ: [["+K[0][0]+","+K[0][1]+"],["+K[1][0]+","+K[1][1]+"]] ");
         HillCipher2x2 cipher = new HillCipher2x2(K);
+        // 3) Дешифруем и проверяем PNG‑сигнатуру
         byte[] dec = cipher.decrypt(enc);
         boolean ok = dec.length>=8 && (dec[0]&0xFF)==0x89 && dec[1]==0x50 && dec[2]==0x4E && dec[3]==0x47 && dec[4]==0x0D && dec[5]==0x0A && dec[6]==0x1A && dec[7]==0x0A;
         System.out.println("PNG сигнатура: " + (ok ? "OK" : "НЕ СОВПАЛА"));
+        // 4) Сохраняем результат
         FileUtils.writeFile("src/main/resources/" + OUT, dec);
         System.out.println("Сохранено: src/main/resources/" + OUT);
     }

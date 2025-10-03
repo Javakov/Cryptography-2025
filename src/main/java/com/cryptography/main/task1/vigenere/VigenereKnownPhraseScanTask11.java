@@ -6,6 +6,10 @@ import com.cryptography.utils.FileUtils;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
+/**
+ * Задание 1.11: Сканирование по шифртексту известной фразы (known-plaintext),
+ * оценка ключа по читаемости, минимизация периода и финальная расшифровка.
+ */
 public class VigenereKnownPhraseScanTask11 {
     private static final String INPUT = "1/in/text1_vigener_c.txt";
     private static final String OUT = "1/out/text1_vigener_c_decrypt.txt";
@@ -19,12 +23,15 @@ public class VigenereKnownPhraseScanTask11 {
 
         int windows = Math.max(0, cipher.length - phrase.length + 1);
         for (int shift = 0; shift < windows; shift++) {
-            // производим ключ на длину фразы
+            // Производим «кусок ключа» длины фразы в предполагаемом окне совмещения.
+            // Если Vigenere: c[i] = p[i] + k[i mod L] (mod 256), то k[i] = c[i] - p[i] (mod 256).
+            // Здесь не знаем L и выравнивание, поэтому берем срез длины фразы на позиции shift.
             int[] keySlice = new int[phrase.length];
             for (int i = 0; i < phrase.length; i++) {
                 keySlice[i] = ((cipher[shift + i] & 0xFF) - (phrase[i] & 0xFF)) & 0xFF;
             }
-            // оценим буквенность с расшифровкой всего текста, используя период = длина фразы
+            // Оценим «читаемость» расшифровки, используя полученный срез как период ключа.
+            // Это грубая оценка (истинная длина ключа может быть короче), но помогает выбрать хорошее окно.
             VigenereCipher testCipher = new VigenereCipher(keySlice);
             byte[] plain = testCipher.decrypt(cipher);
             double score = readabilityScore(plain);
@@ -35,7 +42,7 @@ public class VigenereKnownPhraseScanTask11 {
         System.out.print("Ключ (кусок, длина фразы) в числах: ");
         for (int i = 0; i < Objects.requireNonNull(bestKey).length; i++) System.out.print(bestKey[i] + (i + 1 < bestKey.length?", ":"\n"));
 
-        // Попробуем укоротить ключ до минимального периода
+        // Попробуем укоротить ключ до минимального периода (если ключ периодичен)
         String candidate = new String(asChars(bestKey));
         String period = minimalPeriod(candidate);
         int[] key = toInts(period);
@@ -49,16 +56,26 @@ public class VigenereKnownPhraseScanTask11 {
         System.out.println("Фрагмент:\n" + preview.substring(0, Math.min(800, preview.length())));
     }
 
+    /**
+     * Представляет массив байтов ключа как символы (по модулю 256) исключительно для визуализации.
+     */
     private static char[] asChars(int[] arr) {
         char[] c = new char[arr.length];
         for (int i = 0; i < arr.length; i++) c[i] = (char) (arr[i] & 0xFF);
         return c;
     }
 
+    /**
+     * Конвертирует строковое представление ключа в массив целых (байтов) ключа.
+     */
     private static int[] toInts(String s) {
         return VigenereCipher.fromString(s);
     }
 
+    /**
+     * Ищет минимальный период строки s: наименьшее p, что s[i] == s[i % p] для всех i.
+     * Если периодичности нет — возвращает исходную строку.
+     */
     private static String minimalPeriod(String s) {
         for (int p = 1; p <= s.length(); p++) {
             boolean ok = true;
@@ -70,6 +87,10 @@ public class VigenereKnownPhraseScanTask11 {
         return s;
     }
 
+    /**
+     * Простая метрика читаемости: поощряет пробелы, латинские буквы и печатаемые символы,
+     * штрафует управляющие. Подходит для англоязычных текстов.
+     */
     private static double readabilityScore(byte[] text) {
         int printable = 0, spaces = 0, letters = 0, ctrl = 0;
         for (byte b : text) {

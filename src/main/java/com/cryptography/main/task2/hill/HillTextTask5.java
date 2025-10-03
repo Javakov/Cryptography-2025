@@ -5,10 +5,21 @@ import com.cryptography.utils.FileUtils;
 
 import java.nio.charset.StandardCharsets;
 
+/**
+ * Задание 2.5: Восстановление ключа Хилла 2x2 по известному фрагменту открытого текста
+ * (метод известного открытого текста), дешифровка и сохранение результата.
+ */
 public class HillTextTask5 {
     private static final String INPUT = "2/in/text2_hill_c_all.txt";
     private static final String OUT = "2/out/text2_hill_c_all_decrypt.txt";
 
+    /**
+     * Шаги:
+     * 1) Читаем байты шифртекста из ресурсов.
+     * 2) Используем known-plaintext: первые символы открытого текста предположительно «Whose ».
+     * 3) По первым четырём байтам восстанавливаем матрицу ключа K = Y * X^{-1} (mod 256).
+     * 4) Дешифруем, сохраняем результат и печатаем фрагмент для проверки.
+     */
     public static void main(String[] args) throws Exception {
         byte[] enc = FileUtils.readResource(INPUT);
         // Известно, что текст начинается со слова "Whose" => первые 6 байт (учтём пробел/знак) возьмём как "Whose "
@@ -24,6 +35,10 @@ public class HillTextTask5 {
         System.out.println("Фрагмент:\n" + preview.substring(0, Math.min(400, preview.length())));
     }
 
+    /**
+     * По известному открытому тексту (X) и шифртексту (Y) восстанавливает K:
+     * K = Y * X^{-1} (mod 256) для первых двух символов.
+     */
     private static int[][] recoverKey(byte[] enc, byte[] known) {
         int y0=enc[0]&0xFF, y1=enc[1]&0xFF, y2=enc[2]&0xFF, y3=enc[3]&0xFF;
         int x0=known[0]&0xFF, x1=known[1]&0xFF, x2=known[2]&0xFF, x3=known[3]&0xFF;

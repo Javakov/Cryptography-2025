@@ -5,6 +5,20 @@ import com.cryptography.utils.FileUtils;
 
 import java.io.IOException;
 
+/**
+ * Задание 1.4: Расшифровка PNG подстановочным шифром с заданной таблицей (256 значений).
+ *
+ * <p>
+ * Используется фиксированная таблица подстановки K длиной 256, где K[m] даёт
+ * байт шифртекста для открытого байта m. Для расшифровки класс {@link SubstitutionCipher}
+ * строит обратную таблицу inv так, что inv[K[m]] = m, и выполняет замену за O(1) на байт.
+ * </p>
+ *
+ * <p>
+ * В конце проверяется PNG-сигнатура (первые 8 байт): 89 50 4E 47 0D 0A 1A 0A, чтобы быстро
+ * убедиться, что результат корректен. Файл сохраняется в каталог ресурсов.
+ * </p>
+ */
 public class SubstitutionImageTask4 {
 
     private static final String INPUT_RESOURCE = "1/in/c3_subst_c_all.png";
@@ -24,6 +38,10 @@ public class SubstitutionImageTask4 {
             196,139,135,240,60,25,225,85,255,246,51,28,146,74,222,186,39,77,0,20,180,154,81,248
     };
 
+    /**
+     * Точка входа: читает зашифрованный PNG из ресурсов, расшифровывает
+     * подстановочным шифром и сохраняет результат. Затем валидирует PNG-сигнатуру.
+     */
     public static void main(String[] args) {
         try {
             if (!FileUtils.resourceExists(INPUT_RESOURCE)) {
@@ -38,7 +56,7 @@ public class SubstitutionImageTask4 {
             FileUtils.writeFile(OUTPUT_FILE, dec);
             System.out.println("Дешифрованное изображение сохранено: " + OUTPUT_FILE);
 
-            // Проверим PNG-сигнатуру
+            // Проверим PNG-сигнатуру (8 байт): 89 50 4E 47 0D 0A 1A 0A
             if (dec.length >= 8) {
                 boolean isPng = (dec[0] == (byte)0x89 && dec[1] == 0x50 && dec[2] == 0x4E && dec[3] == 0x47 &&
                                  dec[4] == 0x0D && dec[5] == 0x0A && dec[6] == 0x1A && dec[7] == 0x0A);

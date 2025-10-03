@@ -7,7 +7,8 @@ import java.io.IOException;
 import java.util.Arrays;
 
 /**
- * Главный класс для шифрования изображения f2.png
+ * Задание 1.1: Шифрование PNG с помощью байтового шифра Цезаря и
+ * демонстрация обратной расшифровки с подбором ключа по сигнатуре PNG.
  */
 public class CaesarImageTask1 {
     private static final String INPUT_RESOURCE = "1/in/f2.png";
@@ -16,7 +17,8 @@ public class CaesarImageTask1 {
     private static final int ENCRYPTION_KEY = 143;
     
     /**
-     * Главный метод программы
+     * Точка входа: шифрует исходное изображение, сохраняет результат и
+     * запускает демонстрацию обратной расшифровки.
      * 
      * @param args аргументы командной строки (не используются)
      */
@@ -64,7 +66,8 @@ public class CaesarImageTask1 {
     }
     
     /**
-     * Демонстрирует процесс расшифровки для проверки корректности
+     * Демонстрирует поиск ключа по первой сигнатуре PNG и полную расшифровку.
+     * Сигнатура PNG: 89 50 4E 47 0D 0A 1A 0A.
      */
     private static void demonstrateDecryption() {
         try {

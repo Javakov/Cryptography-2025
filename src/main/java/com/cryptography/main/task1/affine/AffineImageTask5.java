@@ -3,6 +3,13 @@ package com.cryptography.main.task1.affine;
 import com.cryptography.cipher.affine.AffineCipher;
 import com.cryptography.utils.FileUtils;
 
+/**
+ * Задание 1.5 (изображение, аффинный шифр):
+ * 1) Дешифровать целиком BMP.
+ * 2) Повторно зашифровать «тело» файла, сохранив заголовок (первые 50 байт).
+ * 3) Показать различия с исходным шифртекстом.
+ * Также демонстрация «рабочих» параметров a, b, дающих валидную BMP-сигнатуру.
+ */
 public class AffineImageTask5 {
     private static final String INPUT = "1/in/ff2_affine_c_all.bmp";
     private static final String OUT_DECRYPT = "1/out/ff2_affine_c_all_decrypt.bmp";

@@ -1,9 +1,19 @@
 package com.cryptography.cipher.modes;
 
+/**
+ * Режимы шифрования для «байтового Цезаря» по модулю 256: ECB, CBC, OFB, CFB, CTR.
+ * Все операции выполняются над байтами с маской {@code & 0xFF} для нормализации.
+ */
 public class CaesarModes {
+    /**
+     * Режим ECB: каждый байт шифруется независимо (небезопасен для структурированных данных).
+     */
     public static byte[] ecbEncrypt(byte[] data, int key) { return caesar(data, key); }
     public static byte[] ecbDecrypt(byte[] data, int key) { return caesar(data, -key); }
 
+    /**
+     * Режим CBC (расшифрование): x_i = D_k(y_i) XOR y_{i-1}, y_{-1} = IV.
+     */
     public static byte[] cbcDecrypt(byte[] data, int key, int iv) {
         byte[] out = new byte[data.length];
         int prev = iv & 0xFF;
@@ -16,6 +26,9 @@ public class CaesarModes {
         return out;
     }
 
+    /**
+     * Режим CBC (шифрование): y_i = E_k(x_i XOR y_{i-1}), y_{-1} = IV.
+     */
     public static byte[] cbcEncrypt(byte[] data, int key, int iv) {
         byte[] out = new byte[data.length];
         int prev = iv & 0xFF;
@@ -30,6 +43,9 @@ public class CaesarModes {
 
     public static byte[] ofbDecrypt(byte[] data, int key, int iv) { return ofbStream(data, key, iv); }
     public static byte[] ofbEncrypt(byte[] data, int key, int iv) { return ofbStream(data, key, iv); }
+    /**
+     * Режим OFB: потоковый. s_i = E_k(s_{i-1}), y_i = x_i XOR s_i, s_{-1} = IV.
+     */
     private static byte[] ofbStream(byte[] data, int key, int iv) {
         byte[] out = new byte[data.length];
         int s = iv & 0xFF;
@@ -40,6 +56,9 @@ public class CaesarModes {
         return out;
     }
 
+    /**
+     * Режим CFB (расшифрование): x_i = y_i XOR E_k(s_{i-1}); s_i = y_i.
+     */
     public static byte[] cfbDecrypt(byte[] data, int key, int iv) {
         byte[] out = new byte[data.length];
         int s = iv & 0xFF;
@@ -51,6 +70,9 @@ public class CaesarModes {
         }
         return out;
     }
+    /**
+     * Режим CFB (шифрование): y_i = x_i XOR E_k(s_{i-1}); s_i = y_i.
+     */
     public static byte[] cfbEncrypt(byte[] data, int key, int iv) {
         byte[] out = new byte[data.length];
         int s = iv & 0xFF;
@@ -65,6 +87,9 @@ public class CaesarModes {
 
     public static byte[] ctrDecrypt(byte[] data, int key, int iv) { return ctrStream(data, key, iv); }
     public static byte[] ctrEncrypt(byte[] data, int key, int iv) { return ctrStream(data, key, iv); }
+    /**
+     * Режим CTR: потоковый. ks_i = E_k(counter_i); counter_{i+1} = counter_i + 1.
+     */
     private static byte[] ctrStream(byte[] data, int key, int iv) {
         byte[] out = new byte[data.length];
         int counter = iv & 0xFF;
