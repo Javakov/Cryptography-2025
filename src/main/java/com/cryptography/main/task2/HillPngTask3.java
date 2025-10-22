@@ -1,4 +1,4 @@
-package com.cryptography.main.task2.hill;
+package com.cryptography.main.task2;
 
 import com.cryptography.cipher.hill.HillCipher2x2;
 import com.cryptography.utils.FileUtils;
